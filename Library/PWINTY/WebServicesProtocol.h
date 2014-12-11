@@ -33,7 +33,7 @@
 /**
  \return Status code denoting success or failure.
  */
-- (void)orderStatusWithResult:(NSString *)result;
+- (void)orderStatusWithResult:(id)result;
 
 /**
  \return SubmissionData object containing information on any errors or warnings associated with the order.
@@ -44,6 +44,12 @@
  \return Information about the uploaded photo (PhotosData object).
  */
 - (void)photoUploadedWithResult:(PhotosData *)result;
+
+/**
+ \return Information about the photo uploaded status. Only for PhotosData objects
+ with binary data
+ */
+- (void)photoUploadState:(CGFloat)status forPhoto:(PhotosData*)result;
 
 /**
  \return Information about the photo.
