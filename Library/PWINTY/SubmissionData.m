@@ -33,15 +33,8 @@
     {
         sData.oPhotos = [PhotoErrorData createArrayOfObjectsFromArray:arr];
     }
-    return [sData autorelease];
+    return sData;
 
-}
-
-- (void)dealloc
-{
-    [_oGeneralErrors release];
-    [_oPhotos release];
-    [super dealloc];
 }
 
 @end
@@ -59,7 +52,7 @@
     eData.photoID = [[dict objectForKey:kID] intValue];
     eData.photoErrors = [dict objectForKey:kErrors];
     eData.photoWarnings = [dict objectForKey:kWarnings];
-    return [eData autorelease];
+    return eData;
 }
 
 + (NSArray *)createArrayOfObjectsFromArray:(NSArray *)array
@@ -72,13 +65,6 @@
         [arr addObject:eData];
     }
     return arr;
-}
-
-- (void)dealloc
-{
-    [_photoErrors release];
-    [_photoWarnings release];
-    [super dealloc];
 }
 
 @end
