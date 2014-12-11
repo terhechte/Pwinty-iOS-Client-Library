@@ -20,14 +20,11 @@
  */
 
 @interface PWINTY : NSObject
-{
-    id<WebServicesProtocol>delegate; 
-}
 
 /**
   id<WebServicesProtocol>delegate – obligatory, delegate for receiving server callbacks
  */
-@property (assign, nonatomic) id<WebServicesProtocol>delegate;
+@property (weak, nonatomic) id<WebServicesProtocol>delegate;
 
 /**
  Specifies the desired host.

@@ -11,7 +11,7 @@
 
 @interface PWINTY () {
 @private
-
+    WebServices *_webservice;
 }
 @property (retain, nonatomic) NSString *merchantID;
 @property (retain, nonatomic) NSString *APIKey;
@@ -19,71 +19,65 @@
 @end
 
 @implementation PWINTY
-@synthesize merchantID = _merchantID;
-@synthesize APIKey = _APIKey;
-@synthesize HOST = _HOST;
-@synthesize delegate = _delegate;
 
 - (id)initWithMerchantID:(NSString *)mID APIKey:(NSString *)key andDelegate:(id<WebServicesProtocol>)target
 {
     self = [super init];
     if (self) {
-        WebServices *ws = [WebServices currentInstance];
-        ws.merchantID = mID;
-        ws.APIKey = key;
-        ws.delegate = target;
+        _webservice = [WebServices webserviceInstance];
+        _webservice.merchantID = mID;
+        _webservice.APIKey = key;
+        _webservice.delegate = target;
    }
     
     return self;
 }
 
+- (void) setDelegate:(id<WebServicesProtocol>)aDelegate {
+    _webservice.delegate = aDelegate;
+}
+
 - (void)useSandboxHost:(BOOL)isSandBox
 {
-    WebServices *ws = [WebServices currentInstance];
-    if (isSandBox) ws.HOST = kSandBoxHost;
-    else ws.HOST = kLiveHost;
+    if (isSandBox) _webservice.HOST = kSandBoxHost;
+    else _webservice.HOST = kLiveHost;
 }
 
 - (void)loadOrders
 {
-    [[WebServices currentInstance] loadOrders];
+    [_webservice loadOrders];
 }
 
 - (void)loadOrderWithOrderID:(int)oID
 {
-    [[WebServices currentInstance] loadOrderWithOrderID:oID];
+    [_webservice loadOrderWithOrderID:oID];
 }
 
 
 - (void)createNewOrderWithParams:(OrdersData *)oData
 {
     NSDictionary *dict = [OrdersData createDictionaryFromObject:oData];
-    [[WebServices currentInstance] createNewOrderWithParams:dict];
+    [_webservice createNewOrderWithParams:dict];
 }
 
 - (void)setOrderStatusWithParams:(NSDictionary *)params
 {
-    [[WebServices currentInstance] setOrderStatusWithParams:params];
+    [_webservice setOrderStatusWithParams:params];
 }
 
 - (void)getOrdersWithSubmissionStatusesByID:(int)oID
 {
-    [[WebServices currentInstance] getOrdersWithSubmissionStatusesByID:oID];
+    [_webservice getOrdersWithSubmissionStatusesByID:oID];
 }
 
 - (void)addPhotoToOrderWithParams:(PhotosData *)params
 {
-    [[WebServices currentInstance] addPhotoToOrderWithParams:params];
+    [_webservice addPhotoToOrderWithParams:params];
 }
 
 - (void)getPhotoInfoWithId:(int)pID
 {
-    [[WebServices currentInstance] getPhotoInfoWithId:pID];
-}
-
-- (void)dealloc
-{
-    [super dealloc];
+    [_webservice getPhotoInfoWithId:pID];
 }
 
 @end
