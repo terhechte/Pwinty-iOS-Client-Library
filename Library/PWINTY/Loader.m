@@ -8,7 +8,6 @@
 
 #import "Loader.h"
 
-
 @implementation Loader
 @synthesize loaderTag;
 
@@ -16,7 +15,6 @@
 {
     self = [super init];
     if (self) {
-        [self retain];
         target = delegate;
         receivedData = [[NSMutableData alloc] init];
         [NSURLConnection connectionWithRequest:request delegate:self];
@@ -27,13 +25,7 @@
 + (Loader *)loadWithRequest:(NSMutableURLRequest *)request delegate:(id<LoaderProtocol>)delegate
 {
     Loader *loader = [[Loader alloc] initWithRequest:request delegate:delegate];
-    return [loader autorelease];
-}
-
-- (void)dealloc
-{
-    [receivedData release];
-    [super dealloc];
+    return loader;
 }
 
 #pragma mark - NSURLConnectionDelegates
@@ -44,7 +36,6 @@
     [receivedData setLength:0];
     NSLog(@"error: %@", error);
     if([target respondsToSelector:@selector(loadingDidFinishWithError:)])[target loadingDidFinishWithError:errorDesc];
-    [self autorelease];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
@@ -55,13 +46,18 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
 {
     [receivedData appendData:data];
+    //[receivedData setLength:0];
 }
+
+- (void)connection:(NSURLConnection *)connection didSendBodyData:(NSInteger)bytesWritten totalBytesWritten:(NSInteger)totalBytesWritten totalBytesExpectedToWrite:(NSInteger)totalBytesExpectedToWrite {
+    if([target respondsToSelector:@selector(loadingDidProceedWithStatus:)])[target loadingDidProceedWithStatus:totalBytesWritten];
+}
+
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
     if([target respondsToSelector:@selector(loadingDidFinishWithResult:andLoader:)])[target loadingDidFinishWithResult:receivedData andLoader:self];
     [receivedData setLength:0];
-    [self autorelease];
 }
 
 - (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection

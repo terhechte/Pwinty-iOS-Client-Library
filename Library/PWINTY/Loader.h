@@ -12,6 +12,7 @@
 @protocol LoaderProtocol <NSObject>
 @optional
 - (void)loadingDidFinishWithResult:(id)result andLoader:(id)loader;
+- (void)loadingDidProceedWithStatus:(NSUInteger)status;
 - (void)loadingDidFinishWithError:(NSString *)error;
 @end
 
