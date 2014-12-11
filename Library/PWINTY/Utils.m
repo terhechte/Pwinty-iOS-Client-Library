@@ -10,28 +10,6 @@
 
 @implementation Utils
 
-//  used for compatibility with iOS versions prior to 5.0
-+ (NSString *)buildJSONStringFromDictionary:(NSDictionary *)dict
-{
-    SBJSON *json = [[[SBJSON alloc] init] autorelease];
-    NSError *error = nil;
-    NSString *jsonStr;
-    jsonStr = [json stringWithObject:dict error:&error];
-    if (error == nil) return jsonStr;
-    else return nil;
-}
-
-//  used for compatibility with iOS versions prior to 5.0
-+ (id)buildObjectFromJSONString:(NSString *)jsonStr
-{
-    SBJSON *json = [[[SBJSON alloc] init] autorelease];
-    NSError *error = nil;
-    id jsonObj;
-    jsonObj = [json objectWithString:jsonStr error:&error];
-    if (error != nil) return nil;
-    else return jsonObj;
-}
-
 + (NSURL *)buildURLWithHOST:(NSString *)host andTail:(NSString *)tail
 {
     NSString * path = [host stringByAppendingPathComponent:tail];
@@ -50,6 +28,8 @@
     {
         key = [keys objectAtIndex:i];    
         val = [params objectForKey:key];
+        if ([val isKindOfClass:[NSNumber class]])
+            val = [NSString stringWithFormat:@"%@", val];
         [paramsStr appendFormat:@"%@=%@", key, val];
         if (i != [keys count]-1)
         {
@@ -93,6 +73,18 @@
     else return nil;
 }
 
++ (NSDictionary*) nonNulledDict:(NSDictionary*)dictionary
+{
+    // remove all nulls
+    NSMutableDictionary *dx = dictionary.mutableCopy;
+    for (NSString *key in dictionary.allKeys) {
+        if ((NSNull*)[dictionary objectForKey:key] == [NSNull null]) {
+            [dx removeObjectForKey:key];
+        }
+    }
+    return dx.copy;
+}
+
 + (BOOL)isFieldEmpty:(NSDictionary *)dict exceptions:(NSArray *)ex
 {
     id obj;
@@ -111,6 +103,13 @@
         }
     }
     return NO;
+}
+
++ (void) appendName:(NSString*)name value:(NSString*)value boundary:(NSString*)boundary toPostBody:(NSMutableData*)postbody {
+    [postbody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", name] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[value dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[@"\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
 }
 
 @end
