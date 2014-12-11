@@ -14,8 +14,8 @@ NSString *const kAPIKey = @"X-Pwinty-REST-API-Key";
 //
 
 //HOSTS
-NSString *const kSandBoxHost = @"https://sandbox.pwinty.com";
-NSString *const kLiveHost = @"https://api.pwinty.com";
+NSString *const kSandBoxHost = @"https://sandbox.pwinty.com/v2.1";
+NSString *const kLiveHost = @"https://api.pwinty.com/v2.1";
 //
 
 //HOST TAILS
@@ -35,9 +35,15 @@ NSString *const kAddress2 = @"address2";
 NSString *const kAddressTownOrCity = @"addressTownOrCity";
 NSString *const kStateOrCountry = @"stateOrCounty";
 NSString *const kPostalOrZipCode = @"postalOrZipCode";
-NSString *const kCountry = @"country";
+NSString *const kCountry = @"countryCode";
 NSString *const kPhotos = @"photos";
-NSString *const kTextOnReverse = @"textOnReverse";
+NSString *const kDestinationCountryCode = @"destinationCountryCode";
+NSString *const kUseTrackedShipping = @"useTrackedShipping";
+NSString *const kPayment = @"payment";
+NSString *const kQualityLevel = @"qualityLevel";
+NSString *const kPaymentURL = @"paymentURL";
+NSString *const kShippingInfo = @"shippingInfo";
+
 //
 
 //Order Statuses
@@ -62,6 +68,8 @@ NSString *const kPhotoCopies = @"copies";
 NSString *const kPhotoSizing = @"sizing";
 NSString *const kPhotoFile = @"file";
 NSString *const kphotoFileName = @"fileName";
+NSString *const kPhotoPriceToUser = @"priceToUser";
+NSString *const kPhotoMD5Hash = @"md5Hash";
 //
 
 //Photo statuses

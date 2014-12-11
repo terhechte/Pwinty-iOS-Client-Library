@@ -50,7 +50,12 @@ extern NSString *const kPostalOrZipCode;
 extern NSString *const kCountry;
 extern NSString *const kStatus;
 extern NSString *const kPhotos;
-extern NSString *const kTextOnReverse;
+extern NSString *const kDestinationCountryCode;
+extern NSString *const kUseTrackedShipping;
+extern NSString *const kPayment;
+extern NSString *const kQualityLevel;
+extern NSString *const kPaymentURL;
+extern NSString *const kShippingInfo;
 //
 
 //Order Statuses
@@ -76,6 +81,8 @@ extern NSString *const kPhotoCopies;
 extern NSString *const kPhotoSizing;
 extern NSString *const kPhotoFile;
 extern NSString *const kphotoFileName;
+extern NSString *const kPhotoPriceToUser;
+extern NSString *const kPhotoMD5Hash;
 //
 
 //Photo statuses
