@@ -43,10 +43,6 @@
 //@end
 
 @interface WebServices : NSObject
-{
-    id<WebServicesProtocol>deleagte;
-}
-
 @property (assign, nonatomic) id<WebServicesProtocol>delegate;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
@@ -56,8 +52,7 @@
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 #pragma mark - Singletone
 
-+ (WebServices *)currentInstance;
-+ (void)disposeWebServices;
++ (WebServices *)webserviceInstance;
 
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
 #pragma mark - API

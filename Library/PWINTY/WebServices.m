@@ -11,73 +11,24 @@
 #import "SubmissionData.h"
 #import "Loader.h"
 
-static WebServices *shareInstance = nil;
-
 @interface WebServices () <LoaderProtocol>{
+    PhotosData *_currentUploadingPhotosData;
 }
 - (void)startRequest:(requestType)type;
 @end
 
 @implementation WebServices
-@synthesize delegate = _delegate;
-@synthesize HOST = _HOST;
-@synthesize merchantID = _merchantID;
-@synthesize APIKey = _APIKey;
 
 #pragma mark - Singletone
 
-+ (WebServices *)currentInstance
++ (WebServices *)webserviceInstance
 {
-    @synchronized(self)
-    {
-        if(shareInstance == nil)
-        {
-            shareInstance = [[super allocWithZone:NULL] retain];
-            shareInstance.HOST = [[[NSString alloc] init] autorelease];
-            shareInstance.merchantID = [[[NSString alloc] init] autorelease];
-            shareInstance.APIKey = [[[NSString alloc] init] autorelease];
-        }
-    }
+    WebServices * shareInstance = [[WebServices alloc] init];
+    shareInstance.HOST = @"";
+    shareInstance.merchantID = @"";
+    shareInstance.APIKey = @"";
     return shareInstance;
 }
-
-
-
-+ (void)disposeWebServices
-{
-    @synchronized(self)
-    {
-        if(shareInstance == nil)return;
-        [shareInstance release];
-    }
-}
-
-+ (id)copyWithZone:(NSZone *)zone
-{
-    return self;
-}
-
-- (oneway void)release
-{
-    
-}
-
-- (NSUInteger)retainCount
-{
-    return UINT_MAX;
-}
-
-- (id)autorelease
-{
-    return self;
-}
-
-- (id)retain
-{
-    return self;
-}
-
-
 
 #pragma mark - RequestBuilder
 
@@ -136,47 +87,48 @@ static WebServices *shareInstance = nil;
     [request setValue:contentType forHTTPHeaderField: @"Content-Type"];
     NSMutableData *postbody = [NSMutableData data];
     
+    NSString *filename = params.photoFileName;
+    if (!filename || filename.length == 0) {
+        NSInteger rnd = arc4random() % 2500;
+        filename = [NSString stringWithFormat:@"random_file%li", rnd];
+    }
+    
     // file
-    [postbody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: attachment; name=\"%@\"; filename=\"%@.jpg\"\r\n", kPhotoFile, params.photoFileName] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithString:@"Content-Type: image/png\r\n\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[[NSString stringWithFormat:@"\r\n--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: attachment; name=\"%@\"; filename=\"%@.jpg\"\r\n", kPhotoFile, filename] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[@"Content-Type: image/jpeg\r\n\r\n" dataUsingEncoding:NSUTF8StringEncoding]];
     [postbody appendData:params.photoFile];
-    [postbody appendData:[[NSString stringWithString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [postbody appendData:[@"\r\n" dataUsingEncoding:NSASCIIStringEncoding]];
     
     // order id
-    [postbody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", kOrderID] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithFormat:@"%d", params.oID] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [Utils appendName:kOrderID value:[NSString stringWithFormat:@"%d", params.oID] boundary:boundary toPostBody:postbody];
     
     //type
-    [postbody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", kPhotoType] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[params.photoType dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
-
+    [Utils appendName:kPhotoType value:params.photoType boundary:boundary toPostBody:postbody];
     
     //copies
-    [postbody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", kPhotoCopies] dataUsingEncoding:NSUTF8StringEncoding]];	
-    [postbody appendData:[[NSString stringWithFormat:@"%d", params.photoCopies] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [Utils appendName:kPhotoCopies value:[NSString stringWithFormat:@"%d", params.photoCopies] boundary:boundary toPostBody:postbody];
     
     //sizing
-    [postbody appendData:[[NSString stringWithFormat:@"--%@\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithFormat:@"Content-Disposition: form-data; name=\"%@\"\r\n\r\n", kPhotoSizing] dataUsingEncoding:NSUTF8StringEncoding]];	
-    [postbody appendData:[params.photoSizing dataUsingEncoding:NSUTF8StringEncoding]];
-    [postbody appendData:[[NSString stringWithString:@"\r\n"] dataUsingEncoding:NSUTF8StringEncoding]];
+    [Utils appendName:kPhotoSizing value:params.photoSizing boundary:boundary toPostBody:postbody];
+    
+    //userpice
+    if (params.priceToUser > 0)
+        [Utils appendName:kPhotoPriceToUser value:[NSString stringWithFormat:@"%li", params.priceToUser] boundary:boundary toPostBody:postbody];
+    
+    //md5hash
+    if (params.md5Hash)
+        [Utils appendName:kPhotoMD5Hash value:params.md5Hash boundary:boundary toPostBody:postbody];
     
    //close form
     [postbody appendData:[[NSString stringWithFormat:@"--%@--\r\n", boundary] dataUsingEncoding:NSUTF8StringEncoding]];
     
-    NSString *str = [[NSString alloc] initWithData:postbody encoding:NSUTF8StringEncoding];
-    NSLog(@"postbody --- %@", str);
-    [str release];
-    inputStream = [NSInputStream inputStreamWithData:postbody];
+    //NSString *str = [[NSString alloc] initWithData:postbody.copy encoding:NSASCIIStringEncoding];
+    //NSLog(@"postbody --- %@", str);
+    
+    inputStream = [NSInputStream inputStreamWithData:postbody.copy];
     [request setHTTPBodyStream:inputStream];
-   
+    
     Loader *ldr = [Loader loadWithRequest:request delegate:self];
     ldr.loaderTag = type;
 }
@@ -185,6 +137,7 @@ static WebServices *shareInstance = nil;
 
 - (void)loadOrders //get
 {
+    _currentUploadingPhotosData = nil;
     NSString * path = [_HOST stringByAppendingPathComponent:kOrdersHostTail];
     NSURL * url = [NSURL URLWithString:path];
     [self buildGETRequestWithType:kTypeOrders URL:url];
@@ -193,6 +146,7 @@ static WebServices *shareInstance = nil;
 
 - (void)loadOrderWithOrderID:(int)oID; //get
 {
+    _currentUploadingPhotosData = nil;
     NSString *idStr = [NSString stringWithFormat:@"%d", oID];
     NSString * path = [_HOST stringByAppendingPathComponent:kOrdersHostTail];
     NSURL * url = [Utils buildGETRequestWithPath:path andParams:[NSDictionary dictionaryWithObject:idStr forKey:kID]];
@@ -202,6 +156,7 @@ static WebServices *shareInstance = nil;
 
 - (void)createNewOrderWithParams:(NSDictionary *)params //post
 {
+    _currentUploadingPhotosData = nil;
     NSString *jsonStr;
     NSString * path = [_HOST stringByAppendingPathComponent:kOrdersHostTail];
     NSURL *url = [NSURL URLWithString:path];
@@ -211,6 +166,7 @@ static WebServices *shareInstance = nil;
 
 - (void)setOrderStatusWithParams:(NSDictionary *)params
 {
+    _currentUploadingPhotosData = nil;
     NSString *jsonStr = [Utils buildRequestParamsString:params];
     NSURL *url = [Utils buildURLWithHOST:_HOST andTail:kOrdersStatusHostTail];
     if (jsonStr == nil) return;
@@ -220,6 +176,7 @@ static WebServices *shareInstance = nil;
 
 - (void)getOrdersWithSubmissionStatusesByID:(int)oID
 {
+    _currentUploadingPhotosData = nil;
     NSString *path = [_HOST stringByAppendingPathComponent:kOrderSubmissionHostTail];
     NSURL * url = [Utils buildGETRequestWithPath:path andParams:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", oID] forKey:kID]];
     [self buildGETRequestWithType:kTypeOredrSubmissionStatus URL:url];
@@ -227,6 +184,7 @@ static WebServices *shareInstance = nil;
 
 - (void)getPhotoInfoWithId:(int)pID // photo id
 {
+    _currentUploadingPhotosData = nil;
     NSString *idStr = [NSString stringWithFormat:@"%d", pID];
     NSString * path = [_HOST stringByAppendingPathComponent:kPhotosHostTail];
     NSURL * url = [Utils buildGETRequestWithPath:path andParams:[NSDictionary dictionaryWithObject:idStr forKey:kID]];
@@ -235,16 +193,19 @@ static WebServices *shareInstance = nil;
 
 - (void)addPhotoToOrderWithParams:(PhotosData *)params
 {
-    NSURL *url = [Utils buildURLWithHOST:_HOST andTail:kPhotosHostTail];
+    NSString *photoAddTail = [NSString stringWithFormat:@"%@/%i/%@", kOrdersHostTail, params.oID, kPhotosHostTail];
+    NSURL *url = [Utils buildURLWithHOST:_HOST andTail:photoAddTail];
     if (params.photoPath != nil)
     {
         NSDictionary *dict = [PhotosData createDictionaryFromObject:params];
         NSString *jsonStr = [Utils buildRequestParamsString:dict];
+        _currentUploadingPhotosData = params;
         if (jsonStr == nil) return;
         else [self buildPOSTRequestWithType:kTypeCreatePhoto URL:url body:jsonStr];
     }
     else if (params.photoFile != nil)
     {
+        _currentUploadingPhotosData = params;
         [self builPOSTRequestFirPhotosUploadingWithType:kTypeCreatePhoto URL:url params:params];
     }
 }
@@ -260,16 +221,17 @@ static WebServices *shareInstance = nil;
 
 - (void)loadingDidFinishWithResult:(id)result andLoader:(id)loader
 {
+    //_currentUploadingPhotosData = nil;
     if (_delegate == nil)return;
     
     Loader *instance = (Loader *)loader;
     NSArray *resultArray = nil;
-    NSString *jsonStr = [[[NSString alloc] initWithData:result encoding:NSUTF8StringEncoding] autorelease];
-    NSString *errorStr;
-    id jsonObj = [Utils buildObjectFromJSONString:jsonStr];
+    NSError *error = nil;
+    NSString *errorStr = nil;
+    id jsonObj = [NSJSONSerialization JSONObjectWithData:result options:0 error:&error];
     if (jsonObj == nil) return;
     errorStr = [Utils getErrorTextFromObject:jsonObj];
-    if (errorStr == nil)
+    if (errorStr == nil && error == nil)
     {
         switch (instance.loaderTag) {
             case kTypeOrders:
@@ -291,8 +253,8 @@ static WebServices *shareInstance = nil;
                 break;
               case kTypeCreateOrder:
             {
-                OrdersData *oData = [OrdersData createObjectFormDictionary:jsonObj];
-                if ([_delegate respondsToSelector:@selector(oderCreatedWithResult:)])
+                OrdersData *oData = [OrdersData createObjectFromDictionary:jsonObj];
+                if ([_delegate respondsToSelector:@selector(orderCreatedWithResult:)])
                 {
                     [_delegate orderCreatedWithResult:oData];
                 }
@@ -302,7 +264,7 @@ static WebServices *shareInstance = nil;
             {
                 if ([_delegate respondsToSelector:@selector(orderStatusWithResult:)])
                 {
-                    [_delegate orderStatusWithResult:jsonStr];
+                    [_delegate orderStatusWithResult:jsonObj];
                 }
 
             }
@@ -345,6 +307,9 @@ static WebServices *shareInstance = nil;
     }
     else
     {
+        NSString *er = errorStr;
+        if (!er && error)er = error.localizedDescription;
+        
         if ([_delegate respondsToSelector:@selector(connectionDidFailWithError:)])
         {
             [_delegate connectionDidFailWithError:errorStr];
@@ -352,8 +317,19 @@ static WebServices *shareInstance = nil;
     }
 }
 
+- (void)loadingDidProceedWithStatus:(NSUInteger)status {
+    if (self.delegate && _currentUploadingPhotosData && _currentUploadingPhotosData.photoFile) {
+        // calculate the percentage done
+        double totalSize = _currentUploadingPhotosData.photoFile.length;
+        double currentSize = status;
+        [self.delegate photoUploadState:currentSize/totalSize
+                               forPhoto:_currentUploadingPhotosData];
+    }
+}
+
 - (void)loadingDidFinishWithError:(NSString *)error
 {
+    _currentUploadingPhotosData = nil;
     if (_delegate == nil)return;
     if ([_delegate respondsToSelector:@selector(connectionDidFailWithError:)])
     {
