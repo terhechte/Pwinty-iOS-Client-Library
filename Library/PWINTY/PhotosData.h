@@ -29,16 +29,7 @@
 
 /**
  Type of photo
- - Can be:
-     1) kPhotoType4x6;
-     2) kPhotoType5x7;
-     3) kPhotoType6x6;
-     4) kPhotoType8x8;
-     5) kPhotoType8x10;
-     6) kPhotoType8x12;
-     7) kPhotoTypeP30x40;
-     8) kPhotoTypeP30x45;
-     9) kPhotoTypeP40x50;
+ - i.e. 4x6 or 6x7 etc
 */
 @property (retain, nonatomic) NSString *photoType;
 
@@ -58,19 +49,34 @@
  */
 @property (retain, nonatomic) NSString *photoStatus;
 
+
 /**
- How the image should be resized when printing.
  - Can be:
-     1) kSizingOptionCrop;
-     2) kSizingOptionShrinkToFit;
-     3) kSizingOptionShrinkToExactFit;
+ 1)kSizingOptionCrop
+     The image you upload will be cropped until it exactly fits the aspect ratio (height divided by width) of the type (e.g. 3.5x5) you have specified
+ 2)kSizingOptionShrinkToFit
+     The image you upload will be shrunk until all the image fits on the photo. This can lead to white bars at the edge of the photo (think a widescreen movie on an old 4:3 tv)
+ 3)kSizingOptionShrinkToExactFit
+     The image you upload will be resized until all of the image exactly fits all of the photo. This means that if the aspect ratio of the image and the photo do not match, the image will be stretched or squashed to fit the photo size
  */
 @property (retain, nonatomic) NSString *photoSizing;
+
+/**
+ priceToUser optional integer- the price (in cents/pence) you'd like to charge for each copy (only available if your payment option is InvoiceRecipient)
+ */
+
+@property (assign, nonatomic) NSInteger priceToUser;
+
+/**
+ md5Hash optional an md5Hash of the file which we'll check before processing
+ */
+@property (retain, nonatomic) NSString* md5Hash;
 
 /**
  Binary data of the photo. JPEG format only. (OPTIONAL)
  
  \code
+   iOS:
      UIImage *img = [UIImage imageNamed:@"example.png"];
      NSData *data = UIImageJPEGRepresentation(img, 1);
  \endcode

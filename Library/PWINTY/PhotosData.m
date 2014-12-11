@@ -12,16 +12,6 @@
 
 @implementation PhotosData
 
-@synthesize oID = _oID;
-@synthesize photoID = _photoID;
-@synthesize photoCopies = _photoCopies;
-@synthesize photoType = _photoType;
-@synthesize photoPath = _photoPath;
-@synthesize photoStatus = _photoStatus;
-@synthesize photoSizing = _photoSizing;
-@synthesize photoFile = _photoFile;
-@synthesize photoFileName = _photoFileName;
-
 + (NSDictionary *)createDictionaryFromObject:(PhotosData *)pData
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
@@ -33,33 +23,30 @@
     [dict setObject:pData.photoPath forKey:kPhotoPath];
     [dict setObject:pData.photoStatus forKey:kStatus];
     [dict setObject:pData.photoSizing forKey:kPhotoSizing];
+    [dict setObject:@(pData.priceToUser) forKey:kPhotoSizing];
     [dict setObject:pData.photoFile forKey:kPhotoFile];
     [dict setObject:pData.photoFileName forKey:kphotoFileName];
+    [dict setObject:pData.md5Hash forKey:kPhotoMD5Hash];
+    [dict setObject:@(pData.priceToUser) forKey:kPhotoPriceToUser];
     return dict;
 
 }
 + (PhotosData *)createObjectFormDictionary:(NSDictionary *)dict
 {
-    NSArray *ex = [NSArray arrayWithObjects:kPhotoPath, kPhotoFile, nil];
-    BOOL isFieldEmpty = [Utils isFieldEmpty:dict exceptions:ex];
-    if (!isFieldEmpty)
-    {
-        PhotosData *pData = [[PhotosData alloc] init];
-        pData.oID = [[dict objectForKey:kOrderID] intValue];
-        pData.photoID = [[dict objectForKey:kID] intValue];
-        pData.photoCopies = [[dict objectForKey:kPhotoCopies] intValue];
-        pData.photoType = [dict objectForKey:kPhotoType];
-        pData.photoPath = [dict objectForKey:kPhotoPath]; //optional
-        pData.photoStatus = [dict objectForKey:kStatus];
-        pData.photoSizing = [dict objectForKey:kPhotoSizing];
-        pData.photoFile = [dict objectForKey:kPhotoFile]; //optional
-        pData.photoFileName = [dict objectForKey:kphotoFileName]; //need only if photo file field is not empty
-        return [pData autorelease];
-    }
-    else
-    {
-        return nil;
-    }
+    dict = [Utils nonNulledDict:dict];
+    PhotosData *pData = [[PhotosData alloc] init];
+    pData.oID = [[dict objectForKey:kOrderID] intValue];
+    pData.photoID = [[dict objectForKey:kID] intValue];
+    pData.photoCopies = [[dict objectForKey:kPhotoCopies] intValue];
+    pData.photoType = [dict objectForKey:kPhotoType];
+    pData.photoPath = [dict objectForKey:kPhotoPath]; //optional
+    pData.photoStatus = [dict objectForKey:kStatus];
+    pData.photoSizing = [dict objectForKey:kPhotoSizing];
+    pData.photoFile = [dict objectForKey:kPhotoFile]; //optional
+    pData.photoFileName = [dict objectForKey:kphotoFileName]; //need only if photo file field is not empty
+    pData.md5Hash = [dict objectForKey:kPhotoMD5Hash];
+    pData.priceToUser = [[dict objectForKey:kPhotoPriceToUser] integerValue];
+    return pData;
 }
 
 + (NSArray *)createArrayOfObjectsFromArray:(NSArray *)array
@@ -74,14 +61,4 @@
     return arr;
 }
 
-- (void)dealloc
-{
-    [_photoType release];
-    [_photoPath release];
-    [_photoStatus release];
-    [_photoSizing release];
-    [_photoFile release];
-    [_photoFileName release];
-    [super dealloc];
-}
 @end
