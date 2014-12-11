@@ -1,8 +1,0 @@
-//
-// Prefix header for all source files of the 'PWINTY' target in the 'PWINTY' project
-//
-
-#ifdef __OBJC__
-    #import <Foundation/Foundation.h>
-    #import "Loader.h"
-#endif
