@@ -7,80 +7,96 @@
 //
 
 #import "OrdersData.h"
-#import "SBJSON.h"
 #import "PwintyKeys.h"
 #import "PhotosData.h"
 #import "Utils.h"
 
+@interface OrdersData() {
+    NSDictionary *_shippingInfo;
+    NSURL *_paymentURL;
+}
+
+- (void) setPaymentURL:(NSURL*)url;
+- (void) setShippingInfo:(NSDictionary*)shippingInfo;
+
+@end
+
 @implementation OrdersData
-@synthesize oID = _oID;;
-@synthesize recipientName = _recipientName;
-@synthesize address1 = _address1;;
-@synthesize address2 = _address2;
-@synthesize addressTownOrCity = _addressTownOrCity;
-@synthesize stateOrCountry = _stateOrCountry;
-@synthesize postalOrZipCode = _postalOrZipCode;
-@synthesize country = _country;
-@synthesize status = _status;
-@synthesize photos = _photos;;
-@synthesize textObReverse = _textObReverse;
+
+@synthesize shippingInfo = _shippingInfo;
+@synthesize paymentURL = _paymentURL;
 
 + (NSDictionary *)createDictionaryFromObject:(OrdersData *)oData
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:oData.recipientName forKey:kRecipientName];
-    [dict setObject:oData.address1 forKey:kAddress1];
+    if (oData.address1 != nil)
+        [dict setObject:oData.address1 forKey:kAddress1];
     if (oData.address2 != nil)
-    {
         [dict setObject:oData.address2 forKey:kAddress2];
-    }
-    [dict setObject:oData.addressTownOrCity forKey:kAddressTownOrCity];
-    [dict setObject:oData.stateOrCountry forKey:kStateOrCountry];
-    [dict setObject:oData.postalOrZipCode forKey:kPostalOrZipCode];
-    [dict setObject:oData.country forKey:kCountry];
-    if (oData.textObReverse != nil)
-    {
-        [dict setObject:oData.textObReverse forKey:kTextOnReverse];
-    }
-    return dict;
+    if (oData.addressTownOrCity != nil)
+        [dict setObject:oData.addressTownOrCity forKey:kAddressTownOrCity];
+    if (oData.stateOrCountry != nil)
+        [dict setObject:oData.stateOrCountry forKey:kStateOrCountry];
+    if (oData.postalOrZipCode != nil)
+        [dict setObject:oData.postalOrZipCode forKey:kPostalOrZipCode];
+    if (oData.country != nil)
+        [dict setObject:oData.country forKey:kCountry];
+    if (oData.destinationCountryCode != nil)
+        [dict setObject:oData.destinationCountryCode forKey:kDestinationCountryCode];
+    [dict setObject:@(oData.useTrackedShipping) forKey:kUseTrackedShipping];
+    [dict setObject:oData.payment forKey:kPayment];
+    [dict setObject:oData.qualityLevel forKey:kQualityLevel];
+    if (oData.paymentURL)
+        [dict setObject:[oData.paymentURL absoluteString] forKey:kPaymentURL];
+    if (oData.shippingInfo)
+        [dict setObject:[Utils nonNulledDict:oData.shippingInfo] forKey:kShippingInfo];
+    return dict.copy;
 }
 
-+ (OrdersData *)createObjectFormDictionary:(NSDictionary *)dict
++ (OrdersData *)createObjectFromDictionary:(NSDictionary *)dict
 {
-    NSArray *ex = [NSArray arrayWithObjects:kAddress2, kTextOnReverse, nil];
-    BOOL isFieldEmpty = [Utils isFieldEmpty:dict exceptions:ex];
-    if (!isFieldEmpty)
+    dict = [Utils nonNulledDict:dict];
+    id obj;
+    OrdersData *oData;
+    oData = [[OrdersData alloc] init];
+    oData.oID = [[dict objectForKey:kID] intValue];
+    oData.recipientName = [dict objectForKey:kRecipientName];
+    oData.address1 = [dict objectForKey:kAddress1];
+    oData.stateOrCountry = [dict objectForKey:kStateOrCountry];
+    oData.postalOrZipCode = [dict objectForKey:kPostalOrZipCode];
+    oData.country = [dict objectForKey:kCountry];
+    oData.status = [dict objectForKey:kStatus];
+    oData.photos = [dict objectForKey:kPhotos];
+    obj = [dict objectForKey:kAddress2];
+    if ([obj isKindOfClass:[NSNull class]]) oData.address2 = nil;
+    else oData.address2 = obj;
+    
+    obj = [dict objectForKey:kAddressTownOrCity];
+    if ([obj isKindOfClass:[NSNull class]]) oData.addressTownOrCity = nil;
+    else oData.addressTownOrCity = obj;
+    
+    if ([oData.photos count] > 0)
     {
-        id obj;
-        OrdersData *oData;
-        oData = [[OrdersData alloc] init];
-        oData.oID = [[dict objectForKey:kID] intValue];
-        oData.recipientName = [dict objectForKey:kRecipientName];
-        oData.address1 = [dict objectForKey:kAddress1];
-        oData.stateOrCountry = [dict objectForKey:kStateOrCountry];
-        oData.postalOrZipCode = [dict objectForKey:kPostalOrZipCode];
-        oData.country = [dict objectForKey:kCountry];
-        oData.status = [dict objectForKey:kStatus];
-        oData.photos = [dict objectForKey:kPhotos];
-        obj = [dict objectForKey:kAddress2];
-        if ([obj isKindOfClass:[NSNull class]]) oData.address2 = nil;
-        else oData.address2 = obj;
-        
-        obj = [dict objectForKey:kAddressTownOrCity];
-        if ([obj isKindOfClass:[NSNull class]]) oData.addressTownOrCity = nil;
-        else oData.addressTownOrCity = obj;
-        
-        if ([oData.photos count] > 0)
-        {
-            oData.photos = [PhotosData createArrayOfObjectsFromArray:oData.photos];
-        }
-        oData.textObReverse = [dict objectForKey:kTextOnReverse];
-        return [oData autorelease];
+        oData.photos = [PhotosData createArrayOfObjectsFromArray:oData.photos];
     }
-    else
-    {
-        return nil;
-    }
+    oData.destinationCountryCode = [dict objectForKey:kDestinationCountryCode];
+    
+    obj = [dict objectForKey:kUseTrackedShipping];
+    if ([obj isKindOfClass:[NSNull class]]) oData.useTrackedShipping = NO;
+    else oData.useTrackedShipping = [(NSNumber*)obj boolValue];
+    oData.payment = [dict objectForKey:kPayment];
+    oData.qualityLevel = [dict objectForKey:kQualityLevel];
+    
+    obj = [dict objectForKey:kPaymentURL];
+    if ([obj isKindOfClass:[NSNull class]]) [oData setPaymentURL:nil];
+    else [oData setPaymentURL:[NSURL URLWithString:obj]];
+    
+    obj = [dict objectForKey:kShippingInfo];
+    if ([obj isKindOfClass:[NSNull class]]) [oData setShippingInfo:nil];
+    else [oData setShippingInfo:obj];
+    
+    return oData;
 }
 
 + (NSArray *)createArrayOfObjectsFromArray:(NSArray *)array
@@ -89,24 +105,18 @@
     NSMutableArray *arr;
     arr = [NSMutableArray array];
     for (NSDictionary * dict in array) {
-        oData = [OrdersData createObjectFormDictionary:dict];
+        oData = [OrdersData createObjectFromDictionary:dict];
         if (oData != nil)[arr addObject:oData];
     }
     return arr;
 }
 
-- (void)dealloc
-{
-    [_recipientName release];
-    [_address1 release];
-    [_address2 release];
-    [_addressTownOrCity release];
-    [_stateOrCountry release];
-    [_postalOrZipCode release];
-    [_country release];
-    [_status release];
-    [_photos release];
-    [_textObReverse release];
-    [super dealloc];
+- (void) setShippingInfo:(NSDictionary *)shippingInfo {
+    self->_shippingInfo = shippingInfo;
 }
+
+- (void) setPaymentURL:(NSURL *)url {
+    self->_paymentURL = url;
+}
+
 @end

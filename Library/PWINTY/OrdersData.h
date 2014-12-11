@@ -41,7 +41,7 @@
  */
 @property (retain, nonatomic) NSString *postalOrZipCode;
 /**
- Country of recipient (we support almost every country in the world!)
+ CountryCode Country code of the country where the order should be printed
  */
 @property (retain, nonatomic) NSString *country;
 /**
@@ -58,9 +58,45 @@
  */
 @property (retain, nonatomic) NSArray *photos;
 /**
- Text to be printed on the back of each photo in the order (OPTIONAL)
+ destinationCountryCode Country code of the country where the order will be shipped optional
  */
-@property (retain, nonatomic) NSString *textObReverse;
+@property (retain, nonatomic) NSString *destinationCountryCode;
+/**
+ useTrackedShippingoptional whether to upgrade to a tracked shipping service when available.
+ optional
+ */
+@property (assign, nonatomic) BOOL useTrackedShipping;
+/**
+ payment Payment option for order, 
+ - Can be: 
+     1) InvoiceMe 
+     2) InvoiceRecipient
+ */
+@property (retain, nonatomic) NSString* payment;
+/**
+ qualityLevel Quality level for order
+ - Can be:
+    1) Pro
+    2) Standard
+ */
+@property (retain, nonatomic) NSString* qualityLevel;
+
+/**
+ shippingInfo: The shipping information for the product, read only
+ shippingInfo =     {
+ isTracked = 0;
+ price = 299;
+ trackingNumber = "<null>";
+ trackingUrl = "<null>";
+ };
+
+ */
+@property (readonly) NSDictionary *shippingInfo;
+
+/**
+ paymentUrl: For InvoiceRecipient, the PaymentURL to show to the recipient
+ */
+@property (readonly) NSURL *paymentURL;
 
 /**
  Return NSDictionary with spesified keys.
@@ -70,7 +106,7 @@
 /**
  Return OrdersData object.
  */
-+ (OrdersData *)createObjectFormDictionary:(NSDictionary *)dict;
++ (OrdersData *)createObjectFromDictionary:(NSDictionary *)dict;
 
 /**
  Return an array of OrdersData objects.
