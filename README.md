@@ -1,4 +1,4 @@
-Pwinty-iOS-Client-Library
+Pwinty-Objc
 =========================
 
-Pwinty iOS Client Library
+Pwinty Objective-C (OSX & iOS) Library
