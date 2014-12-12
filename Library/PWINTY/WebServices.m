@@ -71,6 +71,32 @@
     ldr.loaderTag = type;
 }
 
+- (void)buildPUTRequestWithType:(requestType)type URL:(NSURL *)url body:(NSString *)body
+{
+    [self startRequest:type];
+    [[NSRunLoop mainRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+    NSMutableURLRequest *request;
+    request = [NSMutableURLRequest requestWithURL:url];
+    
+    
+   NSData *bodyData  =  [[body stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]
+                               dataUsingEncoding:NSUTF8StringEncoding 
+                               allowLossyConversion:YES];
+    
+	[request setHTTPMethod:@"PUT"];
+	
+    //add header info
+    [request addValue:_merchantID forHTTPHeaderField:@"X-Pwinty-MerchantId"];
+    [request addValue:_APIKey forHTTPHeaderField:@"X-Pwinty-REST-API-Key"];
+    [request setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"content-type"];
+    
+    //create the body of the post
+    [request setHTTPBody:bodyData];
+    
+    Loader *ldr = [Loader loadWithRequest:request delegate:self];
+    ldr.loaderTag = type;
+}
+
 - (void)builPOSTRequestFirPhotosUploadingWithType:(requestType)type URL:(NSURL *)url params:(PhotosData *)params
 {
     [self startRequest:type];
@@ -162,6 +188,17 @@
     NSURL *url = [NSURL URLWithString:path];
     jsonStr = [Utils buildRequestParamsString:params];
     [self buildPOSTRequestWithType:kTypeCreateOrder URL:url body:jsonStr];
+}
+
+- (void)updateOrder:(int)oid withParams:(NSDictionary *)params //put
+{
+    _currentUploadingPhotosData = nil;
+    NSString *jsonStr;
+    NSString *idStr = [NSString stringWithFormat:@"%@/%i", kOrdersHostTail, oid];
+    NSString *path = [_HOST stringByAppendingPathComponent:idStr];
+    NSURL *url = [NSURL URLWithString:path];
+    jsonStr = [Utils buildRequestParamsString:params];
+    [self buildPUTRequestWithType:kTypeUpdateOrder URL:url body:jsonStr];
 }
 
 - (void)setOrderStatusWithParams:(NSDictionary *)params
@@ -257,6 +294,15 @@
                 if ([_delegate respondsToSelector:@selector(orderCreatedWithResult:)])
                 {
                     [_delegate orderCreatedWithResult:oData];
+                }
+            }
+                break;
+              case kTypeUpdateOrder:
+            {
+                OrdersData *oData = [OrdersData createObjectFromDictionary:jsonObj];
+                if ([_delegate respondsToSelector:@selector(orderUpdatedWithResult:)])
+                {
+                    [_delegate orderUpdatedWithResult:oData];
                 }
             }
                 break;

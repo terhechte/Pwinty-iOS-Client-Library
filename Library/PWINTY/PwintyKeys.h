@@ -15,7 +15,8 @@ typedef enum {
     kTypeOrderStatus,
     kTypeOredrSubmissionStatus,
     kTypePhotos,
-    kTypeCreatePhoto
+    kTypeCreatePhoto,
+    kTypeUpdateOrder
 } requestType;
 
 /**

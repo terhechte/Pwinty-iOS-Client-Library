@@ -78,6 +78,18 @@
 - (void)createNewOrderWithParams:(OrdersData *)oData;
 
 /**
+ <br>Updates a order.</br>
+ @param oData - OrdersData object. Refer to \file OrdersData.h
+  
+ <br>On success calls <b>orderCreatedWithResult</b> of PWINTY delegate object with OrdersData object as parameter. Refer to \file WebServicesProtocol.h </br>
+ 
+ <br>On failure calls <b>connectionDidFailWithError</b> with error description:</br>
+ 
+ - One of the input parameters was invalid or missing, error message should indicate which one and why.
+ */
+- (void)updateOrderWithParams:(OrdersData *)oData;
+
+/**
  <br>Update the status of an order (to submit or cancel it).</br>
  @param params - NSDictionary object.
  Must contain the following fields:

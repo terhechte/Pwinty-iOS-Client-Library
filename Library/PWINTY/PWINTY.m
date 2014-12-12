@@ -60,6 +60,11 @@
     [_webservice createNewOrderWithParams:dict];
 }
 
+- (void)updateOrderWithParams:(OrdersData *)oData {
+    NSDictionary *dict = [OrdersData createDictionaryFromObject:oData];
+    [_webservice updateOrder:oData.oID withParams:dict];
+}
+
 - (void)setOrderStatusWithParams:(NSDictionary *)params
 {
     [_webservice setOrderStatusWithParams:params];

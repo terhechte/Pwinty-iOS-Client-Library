@@ -31,6 +31,11 @@
 - (void)orderCreatedWithResult:(OrdersData *)result;
 
 /**
+ \updated a order
+ */
+- (void)orderUpdatedWithResult:(OrdersData *)result;
+
+/**
  \return Status code denoting success or failure.
  */
 - (void)orderStatusWithResult:(id)result;
