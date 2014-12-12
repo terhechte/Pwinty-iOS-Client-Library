@@ -26,14 +26,18 @@
     
     [dict setObject:[NSString stringWithFormat:@"%d", pData.photoCopies] forKey:kPhotoCopies];
     [dict setObject:pData.photoType forKey:kPhotoType];
-    [dict setObject:pData.photoPath forKey:kPhotoPath];
+    if (pData.photoPath)
+        [dict setObject:pData.photoPath forKey:kPhotoPath];
     [dict setObject:pData.photoStatus forKey:kStatus];
     [dict setObject:pData.photoSizing forKey:kPhotoSizing];
-    [dict setObject:@(pData.priceToUser) forKey:kPhotoSizing];
-    [dict setObject:pData.photoFile forKey:kPhotoFile];
-    [dict setObject:pData.photoFileName forKey:kphotoFileName];
-    [dict setObject:pData.md5Hash forKey:kPhotoMD5Hash];
-    [dict setObject:@(pData.priceToUser) forKey:kPhotoPriceToUser];
+    if (pData.photoFile)
+        [dict setObject:pData.photoFile forKey:kPhotoFile];
+    if (pData.photoFileName)
+        [dict setObject:pData.photoFileName forKey:kphotoFileName];
+    if (pData.md5Hash)
+        [dict setObject:pData.md5Hash forKey:kPhotoMD5Hash];
+    if (pData.priceToUser > 0)
+        [dict setObject:@(pData.priceToUser) forKey:kPhotoPriceToUser];
     if (pData.errorMessage) {
         [dict setObject:pData.errorMessage forKey:kPhotoErrorMessage];
     }
