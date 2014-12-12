@@ -20,8 +20,7 @@
 
 + (SubmissionData *)createObjectFromDictionary:(NSDictionary *)dict
 {
-    BOOL isFieldEmpty = [Utils isFieldEmpty:dict exceptions:nil];
-    if (isFieldEmpty) return nil;
+    dict = [Utils nonNulledDict:dict];
 
     SubmissionData *sData;
     sData = [[SubmissionData alloc] init];
