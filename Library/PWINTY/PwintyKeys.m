@@ -70,6 +70,7 @@ NSString *const kPhotoFile = @"file";
 NSString *const kphotoFileName = @"fileName";
 NSString *const kPhotoPriceToUser = @"priceToUser";
 NSString *const kPhotoMD5Hash = @"md5Hash";
+NSString *const kPhotoErrorMessage = @"errorMessage";
 //
 
 //Photo statuses

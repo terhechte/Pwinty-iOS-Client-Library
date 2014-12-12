@@ -88,6 +88,11 @@
  */
 @property (retain, nonatomic) NSString *photoFileName;
 
+/**
+ Uploadiong photo file name. Use for binary data uploading only. (OPTIONAL)
+ */
+@property (readonly) NSString *errorMessage;
+
 
 /**
   Return an array of PhotosData objects.

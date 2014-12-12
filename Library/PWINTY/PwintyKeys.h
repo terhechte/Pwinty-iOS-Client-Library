@@ -57,6 +57,7 @@ extern NSString *const kPayment;
 extern NSString *const kQualityLevel;
 extern NSString *const kPaymentURL;
 extern NSString *const kShippingInfo;
+extern NSString *const kPhotoErrorMessage;
 //
 
 //Order Statuses

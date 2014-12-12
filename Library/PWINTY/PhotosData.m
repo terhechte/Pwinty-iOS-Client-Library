@@ -10,6 +10,12 @@
 #import "PwintyKeys.h"
 #import "Utils.h"
 
+@interface PhotosData() {
+    NSString *_errorMessage;
+}
+- (void) setErrorMessage:(NSString*)aErrorMessage;
+@end
+
 @implementation PhotosData
 
 + (NSDictionary *)createDictionaryFromObject:(PhotosData *)pData
@@ -28,6 +34,9 @@
     [dict setObject:pData.photoFileName forKey:kphotoFileName];
     [dict setObject:pData.md5Hash forKey:kPhotoMD5Hash];
     [dict setObject:@(pData.priceToUser) forKey:kPhotoPriceToUser];
+    if (pData.errorMessage) {
+        [dict setObject:pData.errorMessage forKey:kPhotoErrorMessage];
+    }
     return dict;
 
 }
@@ -46,6 +55,8 @@
     pData.photoFileName = [dict objectForKey:kphotoFileName]; //need only if photo file field is not empty
     pData.md5Hash = [dict objectForKey:kPhotoMD5Hash];
     pData.priceToUser = [[dict objectForKey:kPhotoPriceToUser] integerValue];
+    if ([dict objectForKey:kPhotoErrorMessage])
+        [pData setErrorMessage:[dict objectForKey:kPhotoErrorMessage]];
     return pData;
 }
 
@@ -59,6 +70,19 @@
         if (pData != nil)[arr addObject:pData];
     }
     return arr;
+}
+
+- (void) setErrorMessage:(NSString*)aErrorMessage {
+    self->_errorMessage = aErrorMessage;
+}
+
+- (NSString*) errorMessage {
+    if (_errorMessage &&
+        [_errorMessage isKindOfClass:[NSString class]] &&
+        [_errorMessage length] > 0) {
+        return _errorMessage;
+    }
+    return nil;
 }
 
 @end
