@@ -93,6 +93,15 @@
  */
 @property (readonly) NSString *errorMessage;
 
+/**
+ Photo Thumbnail: After submission set.
+ */
+@property (retain, nonatomic) NSURL *thumbnailURL;
+
+/**
+ Photo Preview URL: After submission set.
+ */
+@property (retain, nonatomic) NSURL *previewURL;
 
 /**
   Return an array of PhotosData objects.

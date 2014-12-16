@@ -41,7 +41,7 @@ NSString *const kDestinationCountryCode = @"destinationCountryCode";
 NSString *const kUseTrackedShipping = @"useTrackedShipping";
 NSString *const kPayment = @"payment";
 NSString *const kQualityLevel = @"qualityLevel";
-NSString *const kPaymentURL = @"paymentURL";
+NSString *const kPaymentURL = @"paymentUrl";
 NSString *const kShippingInfo = @"shippingInfo";
 
 //
@@ -71,6 +71,8 @@ NSString *const kphotoFileName = @"fileName";
 NSString *const kPhotoPriceToUser = @"priceToUser";
 NSString *const kPhotoMD5Hash = @"md5Hash";
 NSString *const kPhotoErrorMessage = @"errorMessage";
+NSString *const kPhotoThumbnail = @"thumbnailUrl";
+NSString *const kPhotoPreview = @"previewUrl";
 //
 
 //Photo statuses

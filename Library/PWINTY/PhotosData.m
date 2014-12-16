@@ -25,11 +25,14 @@
     [dict setObject:[NSString stringWithFormat:@"%d", pData.photoID] forKey:kID];
     
     [dict setObject:[NSString stringWithFormat:@"%d", pData.photoCopies] forKey:kPhotoCopies];
-    [dict setObject:pData.photoType forKey:kPhotoType];
+    if (pData.photoType)
+        [dict setObject:pData.photoType forKey:kPhotoType];
     if (pData.photoPath)
         [dict setObject:pData.photoPath forKey:kPhotoPath];
-    [dict setObject:pData.photoStatus forKey:kStatus];
-    [dict setObject:pData.photoSizing forKey:kPhotoSizing];
+    if (pData.photoStatus)
+        [dict setObject:pData.photoStatus forKey:kStatus];
+    if (pData.photoSizing)
+        [dict setObject:pData.photoSizing forKey:kPhotoSizing];
     if (pData.photoFile)
         [dict setObject:pData.photoFile forKey:kPhotoFile];
     if (pData.photoFileName)
@@ -40,6 +43,12 @@
         [dict setObject:@(pData.priceToUser) forKey:kPhotoPriceToUser];
     if (pData.errorMessage) {
         [dict setObject:pData.errorMessage forKey:kPhotoErrorMessage];
+    }
+    if (pData.thumbnailURL) {
+        [dict setObject:[pData.thumbnailURL absoluteString] forKey:kPhotoThumbnail];
+    }
+    if (pData.previewURL) {
+        [dict setObject:[pData.previewURL absoluteString] forKey:kPhotoPreview];
     }
     return dict;
 
@@ -59,6 +68,10 @@
     pData.photoFileName = [dict objectForKey:kphotoFileName]; //need only if photo file field is not empty
     pData.md5Hash = [dict objectForKey:kPhotoMD5Hash];
     pData.priceToUser = [[dict objectForKey:kPhotoPriceToUser] integerValue];
+    if ([dict objectForKey:kPhotoThumbnail])
+        pData.thumbnailURL = [NSURL URLWithString:[dict objectForKey:kPhotoThumbnail]];
+    if ([dict objectForKey:kPhotoPreview])
+        pData.previewURL = [NSURL URLWithString:[dict objectForKey:kPhotoPreview]];
     if ([dict objectForKey:kPhotoErrorMessage])
         [pData setErrorMessage:[dict objectForKey:kPhotoErrorMessage]];
     return pData;

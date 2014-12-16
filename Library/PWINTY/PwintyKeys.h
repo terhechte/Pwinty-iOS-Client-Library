@@ -85,6 +85,8 @@ extern NSString *const kPhotoFile;
 extern NSString *const kphotoFileName;
 extern NSString *const kPhotoPriceToUser;
 extern NSString *const kPhotoMD5Hash;
+extern NSString *const kPhotoThumbnail;
+extern NSString *const kPhotoPreview;
 //
 
 //Photo statuses
