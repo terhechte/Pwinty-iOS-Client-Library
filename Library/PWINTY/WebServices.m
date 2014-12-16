@@ -201,22 +201,22 @@
     [self buildPUTRequestWithType:kTypeUpdateOrder URL:url body:jsonStr];
 }
 
-- (void)setOrderStatusWithParams:(NSDictionary *)params
+- (void)setOrder:(NSInteger)order status:(NSString*)status
 {
     _currentUploadingPhotosData = nil;
-    NSString *jsonStr = [Utils buildRequestParamsString:params];
-    NSURL *url = [Utils buildURLWithHOST:_HOST andTail:kOrdersStatusHostTail];
-    if (jsonStr == nil) return;
-    else [self buildPOSTRequestWithType:kTypeOrderStatus URL:url body:jsonStr];
+    NSString *jsonStr = [Utils buildRequestParamsString:@{@"status": status}];
+    NSURL *url = [Utils buildURLWithHOST:_HOST andTail:
+                  [NSString stringWithFormat:kOrdersStatusHostTail, order]];
+    [self buildPOSTRequestWithType:kTypeOrderStatus URL:url body:jsonStr];
 
 }
 
 - (void)getOrdersWithSubmissionStatusesByID:(int)oID
 {
     _currentUploadingPhotosData = nil;
-    NSString *path = [_HOST stringByAppendingPathComponent:kOrderSubmissionHostTail];
-    NSURL * url = [Utils buildGETRequestWithPath:path andParams:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", oID] forKey:kID]];
-    [self buildGETRequestWithType:kTypeOredrSubmissionStatus URL:url];
+    NSString *path = [_HOST stringByAppendingPathComponent:[NSString stringWithFormat:kOrderSubmissionHostTail, oID]];
+    //NSURL * url = [Utils buildGETRequestWithPath:path andParams:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d", oID] forKey:kID]];
+    [self buildGETRequestWithType:kTypeOredrSubmissionStatus URL:[NSURL URLWithString:path]];
 }
 
 - (void)getPhotoInfoWithId:(int)pID // photo id

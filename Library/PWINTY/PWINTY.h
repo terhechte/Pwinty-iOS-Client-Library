@@ -91,10 +91,9 @@
 
 /**
  <br>Update the status of an order (to submit or cancel it).</br>
- @param params - NSDictionary object.
- Must contain the following fields:
- - 1) id - Order id;
- - 2) status - Status to which the order should be updated. Valid values are "Cancelled" or "Submitted";
+ @param oid - Order ID
+ @param status - Status to which the order should be updated.
+    Valid values are "Cancelled", "Submitted" or "AwaitingPayment";
  
   <br>On success calls <b>orderStatusWithResult</b> of PWINTY delegate object with string object as parameter. Refer to \file WebServicesProtocol.h </br>
  
@@ -104,7 +103,7 @@
  - One or more of the input parameters was invalid;
  - The order cannot be transitioned to the supplied status from its current status.
  */
-- (void)setOrderStatusWithParams:(NSDictionary *)params;
+- (void )setOrder:(NSInteger)oid status:(NSString*)status;
 
 /**
  Gets information on whether the order is ready for submission, and any errors or warnings associated with the order

@@ -20,8 +20,8 @@ NSString *const kLiveHost = @"https://api.pwinty.com/v2.1";
 
 //HOST TAILS
 NSString *const kOrdersHostTail= @"Orders";
-NSString *const kOrdersStatusHostTail = @"Orders/status";
-NSString *const kOrderSubmissionHostTail = @"Orders/SubmissionStatus";
+NSString *const kOrdersStatusHostTail = @"Orders/%li/Status";
+NSString *const kOrderSubmissionHostTail = @"Orders/%li/SubmissionStatus";
 NSString *const kPhotosHostTail = @"Photos";
 //
 

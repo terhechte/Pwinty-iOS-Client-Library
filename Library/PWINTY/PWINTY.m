@@ -62,12 +62,15 @@
 
 - (void)updateOrderWithParams:(OrdersData *)oData {
     NSDictionary *dict = [OrdersData createDictionaryFromObject:oData];
+    // remove shipping info
+    NSMutableDictionary *dx = dict.mutableCopy;
+    [dx removeObjectForKey:@"shippingInfo"];
+    dict = dx.copy;
     [_webservice updateOrder:oData.oID withParams:dict];
 }
 
-- (void)setOrderStatusWithParams:(NSDictionary *)params
-{
-    [_webservice setOrderStatusWithParams:params];
+- (void )setOrder:(NSInteger)oid status:(NSString*)status {
+    [_webservice setOrder:oid status:status];
 }
 
 - (void)getOrdersWithSubmissionStatusesByID:(int)oID

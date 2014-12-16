@@ -61,7 +61,7 @@
 - (void)loadOrderWithOrderID:(int)oID;
 - (void)createNewOrderWithParams:(NSDictionary *)params;
 - (void)updateOrder:(int)oid withParams:(NSDictionary *)params;
-- (void)setOrderStatusWithParams:(NSDictionary *)params;
+- (void)setOrder:(NSInteger)order status:(NSString*)status;
 - (void)getOrdersWithSubmissionStatusesByID:(int)oID;
 - (void)addPhotoToOrderWithParams:(PhotosData *)params;
 - (void)getPhotoInfoWithId:(int)pID;
