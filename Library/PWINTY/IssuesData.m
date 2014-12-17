@@ -35,8 +35,10 @@
     [dict setObject:[NSString stringWithFormat:@"%d",  pData.orderId] forKey:kOrderID];
     [dict setObject:pData.issue forKey:kIssueIssue];
     [dict setObject:pData.action forKey:kIssueAction];
-    [dict setObject:pData.issueDetail forKey:kIssueDetail];
-    [dict setObject:pData.issueState forKey:kIssueState];
+    if (pData.issueDetail)
+        [dict setObject:pData.issueDetail forKey:kIssueDetail];
+    if (pData.issueState)
+        [dict setObject:pData.issueState forKey:kIssueState];
     return dict.copy;
 }
 
