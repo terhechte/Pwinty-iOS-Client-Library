@@ -69,6 +69,12 @@
     [_webservice updateOrder:oData.oID withParams:dict];
 }
 
+
+- (void)createNewIssueForOrder:(int)oid withIssue:(IssuesData*)issue {
+    NSDictionary *dict = [IssuesData createDictionaryFromObject:issue];
+    [_webservice createNewIssueForOrder:oid withParams:dict];
+}
+
 - (void )setOrder:(NSInteger)oid status:(NSString*)status {
     [_webservice setOrder:oid status:status];
 }

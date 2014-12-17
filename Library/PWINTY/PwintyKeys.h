@@ -16,7 +16,8 @@ typedef enum {
     kTypeOredrSubmissionStatus,
     kTypePhotos,
     kTypeCreatePhoto,
-    kTypeUpdateOrder
+    kTypeUpdateOrder,
+    kTypeCreateIssue,
 } requestType;
 
 /**
@@ -38,6 +39,7 @@ extern NSString *const kOrdersHostTail;
 extern NSString *const kOrdersStatusHostTail;
 extern NSString *const kOrderSubmissionHostTail;
 extern NSString *const kPhotosHostTail;
+extern NSString *const kIssuesCreateHostTail;
 //
 
 //Orders keys
@@ -114,3 +116,10 @@ extern NSString *const kPhotoTypeP30x40;
 extern NSString *const kPhotoTypeP30x45;
 extern NSString *const kPhotoTypeP40x50;
 //
+
+//Issue keys
+NSString *const kIssueIssue;
+NSString *const kIssueDetail;
+NSString *const kIssueAction;
+NSString *const kIssueState;
+NSString *const kIssueCommentary;

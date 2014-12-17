@@ -9,6 +9,7 @@
 #import "WebServices.h"
 #import "Utils.h"
 #import "SubmissionData.h"
+#import "IssuesData.h"
 #import "Loader.h"
 
 @interface WebServices () <LoaderProtocol>{
@@ -190,6 +191,17 @@
     [self buildPOSTRequestWithType:kTypeCreateOrder URL:url body:jsonStr];
 }
 
+- (void)createNewIssueForOrder:(int)oid withParams:(NSDictionary *)params {
+    _currentUploadingPhotosData = nil;
+    NSString *jsonStr;
+    NSString * path = [_HOST stringByAppendingPathComponent:
+                       [NSString stringWithFormat:kIssuesCreateHostTail,
+                        oid]];
+    NSURL *url = [NSURL URLWithString:path];
+    jsonStr = [Utils buildRequestParamsString:params];
+    [self buildPOSTRequestWithType:kTypeCreateIssue URL:url body:jsonStr];
+}
+
 - (void)updateOrder:(int)oid withParams:(NSDictionary *)params //put
 {
     _currentUploadingPhotosData = nil;
@@ -294,6 +306,15 @@
                 if ([_delegate respondsToSelector:@selector(orderCreatedWithResult:)])
                 {
                     [_delegate orderCreatedWithResult:oData];
+                }
+            }
+                break;
+            case kTypeCreateIssue:
+            {
+                IssuesData *oData = [IssuesData createObjectFromDictionary:jsonObj];
+                if ([_delegate respondsToSelector:@selector(issueCreatedWithResult:)])
+                {
+                    [_delegate issueCreatedWithResult:oData];
                 }
             }
                 break;

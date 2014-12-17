@@ -65,5 +65,6 @@
 - (void)getOrdersWithSubmissionStatusesByID:(int)oID;
 - (void)addPhotoToOrderWithParams:(PhotosData *)params;
 - (void)getPhotoInfoWithId:(int)pID;
+- (void)createNewIssueForOrder:(int)oid withParams:(NSDictionary *)params;
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 @end

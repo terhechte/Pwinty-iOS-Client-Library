@@ -10,6 +10,7 @@
 #import "OrdersData.h"
 #import "PhotosData.h"
 #import "SubmissionData.h"
+#import "IssuesData.h"
 #import "PwintyKeys.h"
 
 @protocol WebServicesProtocol<NSObject>
@@ -60,6 +61,11 @@
  \return Information about the photo.
  */
 - (void)photoInfoLoadedWithResult:(PhotosData *)result;
+
+/**
+ \return IssueData object representing the new issue.
+ */
+- (void)issueCreatedWithResult:(IssuesData *)result;
 
 
 @required

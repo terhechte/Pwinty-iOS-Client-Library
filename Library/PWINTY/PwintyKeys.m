@@ -23,6 +23,7 @@ NSString *const kOrdersHostTail= @"Orders";
 NSString *const kOrdersStatusHostTail = @"Orders/%li/Status";
 NSString *const kOrderSubmissionHostTail = @"Orders/%li/SubmissionStatus";
 NSString *const kPhotosHostTail = @"Photos";
+NSString *const kIssuesCreateHostTail= @"Orders/%li/Issue";
 //
 
 NSString *const kID = @"id";
@@ -100,3 +101,10 @@ NSString *const kPhotoTypeP30x40 = @"P30x40";
 NSString *const kPhotoTypeP30x45 = @"P30x45";
 NSString *const kPhotoTypeP40x50 = @"P40x50";
 //
+
+//Issue keys
+NSString *const kIssueIssue = @"issue";
+NSString *const kIssueDetail = @"issueDetail";
+NSString *const kIssueAction = @"action";
+NSString *const kIssueState = @"issueState";
+NSString *const kIssueCommentary = @"issueCommentary";

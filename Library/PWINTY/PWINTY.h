@@ -12,6 +12,7 @@
 #import "OrdersData.h"
 #import "SubmissionData.h"
 #import "PhotosData.h"
+#import "IssuesData.h"
 
 
 /**
@@ -143,5 +144,13 @@
  - The photo with the specified id was not found.
  */
 - (void)getPhotoInfoWithId:(int)pID;
+
+
+/**
+ Create a new issue for an existing order
+ @param oid = the id of the order
+ @param issue: A issueData object 
+ */
+- (void)createNewIssueForOrder:(int)oid withIssue:(IssuesData*)issue;
 
 @end
