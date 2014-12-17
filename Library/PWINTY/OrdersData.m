@@ -30,6 +30,8 @@
 {
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     [dict setObject:oData.recipientName forKey:kRecipientName];
+    if (oData.oID > 0)
+        [dict setObject:@(oData.oID) forKey:kID];
     if (oData.address1 != nil)
         [dict setObject:oData.address1 forKey:kAddress1];
     if (oData.address2 != nil)
