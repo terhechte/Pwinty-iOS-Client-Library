@@ -23,7 +23,7 @@ NSString *const kOrdersHostTail= @"Orders";
 NSString *const kOrdersStatusHostTail = @"Orders/%li/Status";
 NSString *const kOrderSubmissionHostTail = @"Orders/%li/SubmissionStatus";
 NSString *const kPhotosHostTail = @"Photos";
-NSString *const kIssuesCreateHostTail= @"Orders/%li/Issue";
+NSString *const kIssuesCreateHostTail= @"Orders/%li/Issues";
 //
 
 NSString *const kID = @"id";
